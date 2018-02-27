@@ -26,10 +26,9 @@ then
     # get full path of graph edge file
     EDGE_FILE=$(realpath $EDGE_FILE)
 
-    cd $OUT_DIR
     if [ "$TASK" == "q1" ]
     then
-        java Simulator "$EDGE_FILE" "$NODE_ID"
+        java -cp "$OUT_DIR:./dependency/*" Simulator "$EDGE_FILE" "$NODE_ID"
     elif [ "$TASK" == "q2" ]
     then
         java Simulator "$EDGE_FILE" "$NODE_ID"
