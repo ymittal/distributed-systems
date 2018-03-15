@@ -26,6 +26,12 @@ public class Simulator {
 
         // start network thread
         networkThread.start();
+
+//        int numNodes = gNodes.size();
+//        int maxRounds = (int) Math.ceil(2 * (Math.log(numNodes) / Math.log(2))
+//                + Math.log(numNodes));
+//        System.out.println(String.format("Maximum number of rounds %s", maxRounds));
+
         while (true) {
             for (GNode node : gNodes) {
                 if (node.hasGossip()) {
