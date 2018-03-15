@@ -1,7 +1,7 @@
 import java.util.List;
 import java.util.Random;
 
-public class GossipNode {
+public class GNode {
 
     private static Random random = new Random();
 
@@ -9,7 +9,7 @@ public class GossipNode {
     private List<Integer> neighbors;
     private boolean hasGossip;
 
-    GossipNode(int id, List<Integer> neighbors) {
+    GNode(int id, List<Integer> neighbors) {
         this.id = id;
         this.neighbors = neighbors;
         this.hasGossip = false;
@@ -28,11 +28,12 @@ public class GossipNode {
         return this.neighbors.get(idx);
     }
 
-    public boolean hasReceivedGossip() {
+    public boolean hasGossip() {
         return this.hasGossip;
     }
 
-    public void setGossipReceived() {
+    public void receiveGossip() {
+        System.out.println(":Gossip received by node " + id);
         this.hasGossip = true;
     }
 }

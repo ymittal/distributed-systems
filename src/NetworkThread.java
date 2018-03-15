@@ -2,19 +2,25 @@ import java.util.*;
 
 public class NetworkThread extends Thread {
 
-    public static final int GOSSIP_TRANSMISSION_DELAY = 1000;
+    private static final int MAX_DELAY = 1100;
+    private static final int MIN_DELAY = 900;
 
     private volatile Queue<Integer> recipientQueue;
-    private Map<Integer, GossipNode> gossipNodeMap;
+    private Map<Integer, GNode> gossipNodeMap;
+    private boolean hasStartedGossiping;
 
-    public NetworkThread(List<GossipNode> gossipNodes, int startNodeId) {
+    private Random rand;
+
+    public NetworkThread(List<GNode> gNodes, int startNodeId) {
         this.recipientQueue = new LinkedList<>();
         this.recipientQueue.add(startNodeId);
 
         this.gossipNodeMap = new HashMap<>();
-        for (GossipNode node : gossipNodes) {
+        for (GNode node : gNodes) {
             this.gossipNodeMap.put(node.getId(), node);
         }
+        this.hasStartedGossiping = false;
+        rand = new Random();
     }
 
     @Override
@@ -24,17 +30,22 @@ public class NetworkThread extends Thread {
         while (true) {
             if (!this.recipientQueue.isEmpty()) {
                 int nodeId = this.recipientQueue.remove();
-                GossipNode node = this.gossipNodeMap.get(nodeId);
+                GNode node = this.gossipNodeMap.get(nodeId);
 
-                System.out.println(String.format("Gossip for %s scheduled", nodeId));
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        node.setGossipReceived();
-                        System.out.println(String.format("Gossip received by %s",
-                                nodeId));
-                    }
-                }, GOSSIP_TRANSMISSION_DELAY);
+                if (!hasStartedGossiping) {
+                    node.receiveGossip();
+                    hasStartedGossiping = true;
+                } else {
+                    System.out.println(":Gossip scheduled for node " + nodeId);
+
+                    int delay = rand.nextInt((MAX_DELAY - MIN_DELAY) + 1) + MIN_DELAY;
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            node.receiveGossip();
+                        }
+                    }, delay);
+                }
             }
         }
     }

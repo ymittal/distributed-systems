@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 public final class EdgeFileParser {
 
-    public static List<GossipNode> parseFile(String filepath) {
-        List<GossipNode> gossipNodes = new ArrayList<>();
+    public static List<GNode> parseFile(String filepath) {
+        List<GNode> gNodes = new ArrayList<>();
         try {
             Scanner scanner = new Scanner(new FileReader(filepath));
             while (scanner.hasNextLine()) {
@@ -24,15 +24,15 @@ public final class EdgeFileParser {
                     for (String edgeIdStr : listEdges.split(",")) {
                         edges.add(Integer.parseInt(edgeIdStr));
                     }
-                    GossipNode node = new GossipNode(nodeId, edges);
-                    gossipNodes.add(node);
+                    GNode node = new GNode(nodeId, edges);
+                    gNodes.add(node);
                 }
             }
             scanner.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return gossipNodes;
+        return gNodes;
     }
 
 }
