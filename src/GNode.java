@@ -1,8 +1,11 @@
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class GNode {
 
+    private static Logger LOGGER = Logger.getLogger(GNode.class.getName());
     private static Random random = new Random();
 
     private final int id;
@@ -33,7 +36,12 @@ public class GNode {
     }
 
     public void receiveGossip() {
-        System.out.println(":Gossip received by node " + id);
+        LOGGER.info("Gossip received by node " + id);
+        if (!hasGossip) {
+            System.out.println(String.format("node %s\t%s",
+                    id,
+                    new Date()));
+        }
         this.hasGossip = true;
     }
 }

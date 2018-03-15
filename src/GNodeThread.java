@@ -1,26 +1,30 @@
+import java.util.logging.Logger;
+
 public class GNodeThread extends Thread {
 
-    private static final int DELAY_UNTIL_GOSSIP_AGAIN = 1000;
+    private static Logger LOGGER = Logger.getLogger(GNodeThread.class.getName());
+    private static final int DELAY_UNTIL_GOSSIP_AGAIN = 2000;
 
     private GNode node;
     private NetworkThread networkThread;
 
-    private volatile boolean canGossip;
+    private volatile boolean canSpreadGossip;
 
     public GNodeThread(GNode node, NetworkThread networkThread) {
         this.node = node;
         this.networkThread = networkThread;
-        canGossip = false;
+        canSpreadGossip = false;
     }
 
     @Override
     public void run() {
-        System.out.println("GNodeThread " + node.getId() + " running...");
+        LOGGER.info("GNodeThread " + node.getId() + " running...");
         while (true) {
-            if (canGossip) {
+            if (canSpreadGossip) {
                 int neighborId = this.node.getRandomNeighborId();
                 this.networkThread.addToRecipientQueue(neighborId);
-                canGossip = false;
+                canSpreadGossip = false;
+
                 try {
                     sleep(DELAY_UNTIL_GOSSIP_AGAIN);
                 } catch (InterruptedException e) {
@@ -31,6 +35,6 @@ public class GNodeThread extends Thread {
     }
 
     public void spreadGossip() {
-        this.canGossip = true;
+        this.canSpreadGossip = true;
     }
 }

@@ -3,13 +3,14 @@
  * Plots the graph and changes the color every second.
  */
 
-import org.graphstream.graph.*;
-import org.graphstream.graph.implementations.*;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
 
 
 public class TestGraph {
 
-    public static void main(String [] argv) {
+    public static void main(String[] argv) {
 
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         Graph graph = new SingleGraph("test");
@@ -31,7 +32,7 @@ public class TestGraph {
         b.addAttribute("ui.class", "red");
         c.addAttribute("ui.class", "red");
         boolean is_red = true;
-        while(true){
+        while (true) {
             try {
                 Thread.sleep(1000);
                 if (is_red == true) {
@@ -39,16 +40,15 @@ public class TestGraph {
                     b.setAttribute("ui.class", "blue");
                     c.setAttribute("ui.class", "blue");
                     is_red = false;
-                }
-                else {
+                } else {
                     a.setAttribute("ui.class", "red");
                     b.setAttribute("ui.class", "red");
                     c.setAttribute("ui.class", "red");
                     is_red = true;
                 }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

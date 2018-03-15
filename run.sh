@@ -28,7 +28,8 @@ then
 
     if [ "$TASK" == "q1" ]
     then
-        java -cp "$OUT_DIR:./dependency/*" Simulator "$EDGE_FILE" "$NODE_ID"
+        java -cp "$OUT_DIR" Simulator "$EDGE_FILE" "$NODE_ID" > q1.out
+        echo "output file: q1.out"
     elif [ "$TASK" == "q2" ]
     then
         java Simulator "$EDGE_FILE" "$NODE_ID"

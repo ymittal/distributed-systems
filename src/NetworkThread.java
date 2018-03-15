@@ -1,7 +1,9 @@
 import java.util.*;
+import java.util.logging.Logger;
 
 public class NetworkThread extends Thread {
 
+    private static Logger LOGGER = Logger.getLogger(NetworkThread.class.getName());
     private static final int MAX_DELAY = 1100;
     private static final int MIN_DELAY = 900;
 
@@ -25,7 +27,7 @@ public class NetworkThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("NetworkThread running...");
+        // System.out.println("NetworkThread running...");
 
         while (true) {
             if (!this.recipientQueue.isEmpty()) {
@@ -36,7 +38,7 @@ public class NetworkThread extends Thread {
                     node.receiveGossip();
                     hasStartedGossiping = true;
                 } else {
-                    System.out.println(":Gossip scheduled for node " + nodeId);
+                    LOGGER.info("Gossip scheduled for node " + nodeId);
 
                     int delay = rand.nextInt((MAX_DELAY - MIN_DELAY) + 1) + MIN_DELAY;
                     new Timer().schedule(new TimerTask() {

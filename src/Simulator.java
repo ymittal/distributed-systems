@@ -1,10 +1,14 @@
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.LogManager;
 
 public class Simulator {
 
     public static void main(String[] args) throws InterruptedException {
+        // comment the following line to output log to console
+        LogManager.getLogManager().reset();
+
         int count = args.length;
         if (count < 2) {
             throw new IllegalArgumentException("At least two args required");
@@ -14,7 +18,6 @@ public class Simulator {
 
         // parse input file containing edge data
         List<GNode> gNodes = EdgeFileParser.parseFile(edgeFilename);
-        // TODO: validate startNodeId
         NetworkThread networkThread = new NetworkThread(gNodes, startNodeId);
 
         Map<GNode, GNodeThread> gossipNodeThreadMap = new HashMap<>();
@@ -27,18 +30,17 @@ public class Simulator {
         // start network thread
         networkThread.start();
 
-//        int numNodes = gNodes.size();
-//        int maxRounds = (int) Math.ceil(2 * (Math.log(numNodes) / Math.log(2))
-//                + Math.log(numNodes));
-//        System.out.println(String.format("Maximum number of rounds %s", maxRounds));
-
-        while (true) {
+        int numNodesReceived = 0;
+        while (numNodesReceived < gNodes.size()) {
+            numNodesReceived = 0;
             for (GNode node : gNodes) {
                 if (node.hasGossip()) {
+                    numNodesReceived += 1;
                     GNodeThread nodeThread = gossipNodeThreadMap.get(node);
                     nodeThread.spreadGossip();
                 }
             }
         }
+        System.exit(0);
     }
 }
