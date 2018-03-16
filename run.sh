@@ -36,10 +36,12 @@ then
         java -cp "$OUT_DIR:./dependency/*" simulator.GraphSimulator "$EDGE_FILE" "$NODE_ID"
     elif [ "$TASK" == "q3" ]
     then
-        for p in `seq 0.0 0.05 0.95`
+        for p in `seq 0.0 0.05 0.15`
         do
             echo "using p=$p"
-            java -cp "$OUT_DIR:./dependency/*" simulator.ProbSimulator "$EDGE_FILE" "$NODE_ID" "$p"
+            time=$(java -cp "$OUT_DIR" simulator.ProbSimulator "$EDGE_FILE" "$NODE_ID" "$p" \
+                    | tee /dev/tty \
+                    | awk 'END {print $4}')
         done
     fi
 else

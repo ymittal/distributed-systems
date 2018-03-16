@@ -8,31 +8,23 @@ import util.EdgeFileParser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-public class ProbSimulator {
-
-    private static Logger LOGGER = Logger.getLogger(ProbSimulator.class.getName());
-    private static Random random = new Random();
+/**
+ * @deprecated {@link ProbSimulator} can be used
+ */
+public class SimpleSimulator {
 
     public static void main(String[] args) {
         // comment the following line to output log to console
         LogManager.getLogManager().reset();
 
         int count = args.length;
-        if (count < 3) {
-            throw new IllegalArgumentException("At least three args required");
+        if (count < 2) {
+            throw new IllegalArgumentException("At least two args required");
         }
         String edgeFilename = args[0];
         int startNodeId = Integer.parseInt(args[1]);
-        float dropProb = Float.parseFloat(args[2]);
-
-        // true for when drop probability needs to be used
-        // (for efficiency, need not generate random floats)
-        boolean doRandom = dropProb != 0.0;
-        if (doRandom) LOGGER.info("using msg drop probability " + dropProb);
 
         // parse input file containing edge data
         List<GNode> gNodes = EdgeFileParser.parseFile(edgeFilename);
@@ -49,23 +41,16 @@ public class ProbSimulator {
         networkThread.start();
 
         int numNodesReceived = 0;
-
-        long startTime = System.currentTimeMillis();
         while (numNodesReceived < gNodes.size()) {
             numNodesReceived = 0;
             for (GNode node : gNodes) {
                 if (node.hasGossip()) {
                     numNodesReceived += 1;
-                    if (!doRandom || random.nextFloat() > dropProb) {
-                        GNodeThread nodeThread = gossipNodeThreadMap.get(node);
-                        nodeThread.spreadGossip();
-                    }
+                    GNodeThread nodeThread = gossipNodeThreadMap.get(node);
+                    nodeThread.spreadGossip();
                 }
             }
         }
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(String.format("total time elapsed\t%s ms",
-                elapsedTime));
         System.exit(0);
     }
 }
