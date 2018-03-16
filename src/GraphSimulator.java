@@ -12,7 +12,9 @@ public class GraphSimulator {
 
     private static final String RED = "red";
     private static final String GREEN = "green";
+
     private static final String UI_CLASS = "ui.class";
+    private static final String UI_LABEL = "ui.label";
 
     private static Graph graph;
 
@@ -69,7 +71,7 @@ public class GraphSimulator {
         graph.display();
         graph.addAttribute("ui.antialias");
         graph.addAttribute("stylesheet", "graph { padding : 48px; }"
-                + "node { size: 12px; fill-mode: plain; }"
+                + "node { size: 14px; fill-mode: plain; }"
                 + "node.red { fill-color: red; }"
                 + "node.green { fill-color: green; }");
     }
@@ -94,6 +96,7 @@ public class GraphSimulator {
             }
 
             Node visNode = visNodeMap.get(node.getId());
+            visNode.addAttribute(UI_LABEL, node.getId());
             if (node.getId() == startNodeId) {
                 visNode.addAttribute(UI_CLASS, GREEN);
             } else {
