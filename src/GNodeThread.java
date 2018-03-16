@@ -3,7 +3,7 @@ import java.util.logging.Logger;
 public class GNodeThread extends Thread {
 
     private static Logger LOGGER = Logger.getLogger(GNodeThread.class.getName());
-    private static final int DELAY_UNTIL_GOSSIP_AGAIN = 2000;
+    private static final int DELAY_UNTIL_GOSSIP_AGAIN = 500;
 
     private GNode node;
     private NetworkThread networkThread;
