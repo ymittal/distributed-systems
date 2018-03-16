@@ -1,7 +1,12 @@
+package simulator;
+
+import gossip.GNode;
+import gossip.GNodeThread;
+import gossip.NetworkThread;
 import org.graphstream.graph.EdgeRejectedException;
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
+import util.EdgeFileParser;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +21,7 @@ public class GraphSimulator {
     private static final String UI_CLASS = "ui.class";
     private static final String UI_LABEL = "ui.label";
 
-    private static Graph graph;
+    private static org.graphstream.graph.Graph graph;
 
     public static void main(String[] args) throws InterruptedException {
         // comment the following line to output log to console

@@ -1,10 +1,11 @@
+package gossip;
+
 import java.util.logging.Logger;
 
 public class GNodeThread extends Thread {
 
-    private static Logger LOGGER = Logger.getLogger(GNodeThread.class.getName());
     private static final int DELAY_UNTIL_GOSSIP_AGAIN = 500;
-
+    private static Logger LOGGER = Logger.getLogger(GNodeThread.class.getName());
     private GNode node;
     private NetworkThread networkThread;
 
@@ -18,7 +19,7 @@ public class GNodeThread extends Thread {
 
     @Override
     public void run() {
-        LOGGER.info("GNodeThread " + node.getId() + " running...");
+        LOGGER.info("gossip.GNodeThread " + node.getId() + " running...");
         while (true) {
             if (canSpreadGossip) {
                 int neighborId = this.node.getRandomNeighborId();

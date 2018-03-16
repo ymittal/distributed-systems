@@ -1,3 +1,5 @@
+package gossip;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -12,7 +14,7 @@ public class GNode {
     private List<Integer> neighbors;
     private boolean hasGossip;
 
-    GNode(int id, List<Integer> neighbors) {
+    public GNode(int id, List<Integer> neighbors) {
         this.id = id;
         this.neighbors = neighbors;
         this.hasGossip = false;

@@ -28,14 +28,19 @@ then
 
     if [ "$TASK" == "q1" ]
     then
-        java -cp "$OUT_DIR" Simulator "$EDGE_FILE" "$NODE_ID" | tee q1.out
-        echo "output file q1.out"
+        mkdir -p log
+        java -cp "$OUT_DIR" simulator.ProbSimulator "$EDGE_FILE" "$NODE_ID" 0.0 | tee log/q1.out
+        echo "output file log/q1.out"
     elif [ "$TASK" == "q2" ]
     then
-        java -cp "$OUT_DIR:./dependency/*" GraphSimulator "$EDGE_FILE" "$NODE_ID"
+        java -cp "$OUT_DIR:./dependency/*" simulator.GraphSimulator "$EDGE_FILE" "$NODE_ID"
     elif [ "$TASK" == "q3" ]
     then
-        java Simulator "$EDGE_FILE" "$NODE_ID"
+        for p in `seq 0.0 0.05 0.95`
+        do
+            echo "using p=$p"
+            java -cp "$OUT_DIR:./dependency/*" simulator.ProbSimulator "$EDGE_FILE" "$NODE_ID" "$p"
+        done
     fi
 else
     echo "usage: ./run.sh (compile|q1|q2|q3)"

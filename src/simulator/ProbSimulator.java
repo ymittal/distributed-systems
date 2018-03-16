@@ -1,20 +1,38 @@
+package simulator;
+
+import gossip.GNode;
+import gossip.GNodeThread;
+import gossip.NetworkThread;
+import util.EdgeFileParser;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
-public class Simulator {
+public class ProbSimulator {
 
-    public static void main(String[] args) throws InterruptedException {
+    private static Logger LOGGER = Logger.getLogger(ProbSimulator.class.getName());
+    private static Random random = new Random();
+
+    public static void main(String[] args) {
         // comment the following line to output log to console
         LogManager.getLogManager().reset();
 
         int count = args.length;
-        if (count < 2) {
-            throw new IllegalArgumentException("At least two args required");
+        if (count < 3) {
+            throw new IllegalArgumentException("At least three args required");
         }
         String edgeFilename = args[0];
         int startNodeId = Integer.parseInt(args[1]);
+        float dropProb = Float.parseFloat(args[2]);
+
+        // true for when drop probability needs to be used
+        // (for efficiency, need not generate random floats)
+        boolean doRandom = dropProb != 0.0;
+        if (doRandom) LOGGER.info("using msg drop probability " + dropProb);
 
         // parse input file containing edge data
         List<GNode> gNodes = EdgeFileParser.parseFile(edgeFilename);
@@ -36,8 +54,10 @@ public class Simulator {
             for (GNode node : gNodes) {
                 if (node.hasGossip()) {
                     numNodesReceived += 1;
-                    GNodeThread nodeThread = gossipNodeThreadMap.get(node);
-                    nodeThread.spreadGossip();
+                    if (!doRandom || random.nextFloat() > dropProb) {
+                        GNodeThread nodeThread = gossipNodeThreadMap.get(node);
+                        nodeThread.spreadGossip();
+                    }
                 }
             }
         }

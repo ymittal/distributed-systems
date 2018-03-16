@@ -1,12 +1,13 @@
+package gossip;
+
 import java.util.*;
 import java.util.logging.Logger;
 
 public class NetworkThread extends Thread {
 
-    private static Logger LOGGER = Logger.getLogger(NetworkThread.class.getName());
     private static final int MAX_DELAY = 1100;
     private static final int MIN_DELAY = 900;
-
+    private static Logger LOGGER = Logger.getLogger(NetworkThread.class.getName());
     private volatile Queue<Integer> recipientQueue;
     private Map<Integer, GNode> gossipNodeMap;
     private boolean hasStartedGossiping;
@@ -27,7 +28,7 @@ public class NetworkThread extends Thread {
 
     @Override
     public void run() {
-        // System.out.println("NetworkThread running...");
+        // System.out.println("gossip.NetworkThread running...");
 
         while (true) {
             if (!this.recipientQueue.isEmpty()) {
