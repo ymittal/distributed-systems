@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 OUT_DIR="./build"
-
 TASK=$1
 
 if [ "$TASK" == "compile" ]
@@ -28,21 +27,37 @@ then
 
     if [ "$TASK" == "q1" ]
     then
+        # create log directory if doesn't exist
         mkdir -p log
-        java -cp "$OUT_DIR" simulator.ProbSimulator "$EDGE_FILE" "$NODE_ID" 0.0 | tee log/q1.out
-        echo "output file log/q1.out"
+        OUT_FILE="log/q1.out"
+        java -cp "$OUT_DIR" simulator.ProbSimulator "$EDGE_FILE" "$NODE_ID" 0.0 | tee $OUT_FILE
+        echo "output file $OUT_FILE"
     elif [ "$TASK" == "q2" ]
     then
+        # add graph dependencies to classpath
         java -cp "$OUT_DIR:./dependency/*" simulator.GraphSimulator "$EDGE_FILE" "$NODE_ID"
     elif [ "$TASK" == "q3" ]
     then
-        for p in `seq 0.0 0.05 0.15`
+        data=""
+        # loop over values of drop probability
+        for p in `seq 0 0.05 0.95`
         do
             echo "using p=$p"
-            time=$(java -cp "$OUT_DIR" simulator.ProbSimulator "$EDGE_FILE" "$NODE_ID" "$p" \
-                    | tee /dev/tty \
-                    | awk 'END {print $4}')
+            # retrieve time elapsed from last line of stdout
+            time=$(java -cp "$OUT_DIR" simulator.ProbSimulator "$EDGE_FILE" "$NODE_ID" "$p" | tee /dev/tty | awk 'END {print $4}')
+            data+=$p$'\t'$time$'\n'
         done
+
+        TEMP_FILE="delete.me"
+        echo "$data" > "$TEMP_FILE" # store plot data
+        # plot scatter plot
+        gnuplot -p -e "set xlabel 'Message Drop Probability';
+                       set ylabel 'Time (milliseconds)';
+                       set xrange [0:1];
+                       set yrange [0:];
+                       set title 'Time vs Message Drop Probability';
+                       plot '$TEMP_FILE' notitle with points pt 7 ps 2"
+        rm $TEMP_FILE   # delete temporary data file
     fi
 else
     echo "usage: ./run.sh (compile|q1|q2|q3)"
