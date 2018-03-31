@@ -34,17 +34,14 @@ public class GraphSimulator {
         String edgeFilename = args[0];
         int startNodeId = Integer.parseInt(args[1]);
 
-        initVisualization();
+        setupVisualizationGraph();
         // parse input file containing edge data
         List<GNode> gNodes = EdgeFileParser.parseFile(edgeFilename);
         Map<Integer, Node> visNodeMap = setupVisualizationNodes(gNodes, startNodeId);
 
         NetworkThread networkThread = new NetworkThread(gNodes, startNodeId);
-
-        Map<GNode, GNodeThread> gossipNodeThreadMap = new HashMap<>();
         for (GNode node : gNodes) {
             GNodeThread nodeThread = new GNodeThread(node, networkThread);
-            gossipNodeThreadMap.put(node, nodeThread);
             nodeThread.start();
         }
 
@@ -61,14 +58,12 @@ public class GraphSimulator {
                         visNode.setAttribute(UI_CLASS, GREEN);
                     }
                     numNodesReceived += 1;
-                    GNodeThread nodeThread = gossipNodeThreadMap.get(node);
-                    nodeThread.spreadGossip();
                 }
             }
         }
     }
 
-    private static void initVisualization() {
+    private static void setupVisualizationGraph() {
         System.setProperty("org.graphstream.ui.renderer",
                 "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 

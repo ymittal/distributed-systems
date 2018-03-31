@@ -1,6 +1,7 @@
 package gossip;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 public class NetworkThread extends Thread {
@@ -8,14 +9,15 @@ public class NetworkThread extends Thread {
     private static final int MAX_DELAY = 1100;
     private static final int MIN_DELAY = 900;
     private static Logger LOGGER = Logger.getLogger(NetworkThread.class.getName());
-    private volatile Queue<Integer> recipientQueue;
+
+    private ConcurrentLinkedQueue<Integer> recipientQueue;
     private Map<Integer, GNode> gossipNodeMap;
     private boolean hasStartedGossiping;
 
     private Random rand;
 
     public NetworkThread(List<GNode> gNodes, int startNodeId) {
-        this.recipientQueue = new LinkedList<>();
+        this.recipientQueue = new ConcurrentLinkedQueue<>();
         this.recipientQueue.add(startNodeId);
 
         this.gossipNodeMap = new HashMap<>();
@@ -23,7 +25,7 @@ public class NetworkThread extends Thread {
             this.gossipNodeMap.put(node.getId(), node);
         }
         this.hasStartedGossiping = false;
-        rand = new Random();
+        this.rand = new Random();
     }
 
     @Override
@@ -36,6 +38,7 @@ public class NetworkThread extends Thread {
                 GNode node = this.gossipNodeMap.get(nodeId);
 
                 if (!hasStartedGossiping) {
+                    // starting node receives gossip
                     node.receiveGossip();
                     hasStartedGossiping = true;
                 } else {

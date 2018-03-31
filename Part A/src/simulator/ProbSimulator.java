@@ -36,12 +36,10 @@ public class ProbSimulator {
 
         // parse input file containing edge data
         List<GNode> gNodes = EdgeFileParser.parseFile(edgeFilename);
-        NetworkThread networkThread = new NetworkThread(gNodes, startNodeId);
 
-        Map<GNode, GNodeThread> gossipNodeThreadMap = new HashMap<>();
+        NetworkThread networkThread = new NetworkThread(gNodes, startNodeId);
         for (GNode node : gNodes) {
-            GNodeThread nodeThread = new GNodeThread(node, networkThread);
-            gossipNodeThreadMap.put(node, nodeThread);
+            GNodeThread nodeThread = new GNodeThread(node, networkThread, dropProb);
             nodeThread.start();
         }
 
@@ -56,16 +54,13 @@ public class ProbSimulator {
             for (GNode node : gNodes) {
                 if (node.hasGossip()) {
                     numNodesReceived += 1;
-                    if (!doRandom || random.nextFloat() > dropProb) {
-                        GNodeThread nodeThread = gossipNodeThreadMap.get(node);
-                        nodeThread.spreadGossip();
-                    }
                 }
             }
         }
         long elapsedTime = System.currentTimeMillis() - startTime;
         System.out.println(String.format("total time elapsed\t%s ms",
                 elapsedTime));
+
         System.exit(0);
     }
 }

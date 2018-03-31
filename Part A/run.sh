@@ -5,7 +5,7 @@ TASK=$1
 
 if [ "$TASK" == "compile" ]
 then
-    rm -r $OUT_DIR && mkdir -p $OUT_DIR
+    rm -rf $OUT_DIR && mkdir -p $OUT_DIR
     javac $(find ./src/* | grep .java) -d $OUT_DIR -cp ".:./dependency/*"
 elif [ "$TASK" == "q1" ] || [ "$TASK" == "q2" ] || [ "$TASK" == "q3" ]
 then

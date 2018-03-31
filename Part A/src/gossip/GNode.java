@@ -28,6 +28,9 @@ public class GNode {
         return neighbors;
     }
 
+    /**
+     * @return id of a random node neighbor
+     */
     public int getRandomNeighborId() {
         int idx = random.nextInt(this.neighbors.size());
         return this.neighbors.get(idx);
@@ -37,6 +40,9 @@ public class GNode {
         return this.hasGossip;
     }
 
+    /**
+     * Receives gossip
+     */
     public void receiveGossip() {
         LOGGER.info("Gossip received by node " + id);
         if (!hasGossip) {
